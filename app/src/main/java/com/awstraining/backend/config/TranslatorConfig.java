@@ -21,7 +21,7 @@ public class TranslatorConfig {
 
     @Value("${aws.secretKey:#{null}}")
     private String snsSecretKey;
-    
+
     // TODO: lab2
     //  0. Uncomment @Bean section.
     //  1. Configure AmazonTranslator which will be used by fargate within AWS.
@@ -29,12 +29,14 @@ public class TranslatorConfig {
     //  3. Think how to connect with AWS Service from your local pc.
     @Bean
     AmazonTranslate configureTranslatorClient() {
-        return AmazonTranslateClientBuilder.standard().build();
-
-
-/*                .withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials(snsAccessKey, snsSecretKey)))
-                .withRegion(awsRegion)
-                .build();*/
-
+        if (snsAccessKey != null && snsSecretKey != null) {
+            return AmazonTranslateClientBuilder.standard()
+                    .withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials(snsAccessKey, snsSecretKey)))
+                    .withRegion(awsRegion)
+                    .build();
+        } else {
+            // using real translator client instance
+            return AmazonTranslateClientBuilder.standard().build();
+        }
     }
 }

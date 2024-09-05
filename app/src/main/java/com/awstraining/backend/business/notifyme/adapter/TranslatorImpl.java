@@ -7,21 +7,22 @@ import com.awstraining.backend.business.notifyme.NotifyMeDO;
 import com.awstraining.backend.business.notifyme.Translator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class TranslatorImpl implements Translator {
 
     private static final Logger LOGGER = LogManager.getLogger(TranslatorImpl.class);
-    private AmazonTranslate transalte;
+    private AmazonTranslate translate;
     
     // TODO: lab2
     //  1. Inject AWS AmazonTranslate from configuration TranslatorConfig.
-//    @Autowired
-    public TranslatorImpl(AmazonTranslate transalte) {
-        this.transalte = transalte;
+    @Autowired
+    public TranslatorImpl(AmazonTranslate translate) {
+        this.translate = translate;
     }
-    
+
     @Override
     public String translate(NotifyMeDO notifyMeDO) {
         // TODO: lab2
@@ -29,12 +30,16 @@ public class TranslatorImpl implements Translator {
         //  2. Call translate.
         //  3. Log information about successful translated message.
         //  4. Return translated message
-        final TranslateTextRequest translateTextRequest = new TranslateTextRequest()
+        final TranslateTextRequest translateRequest = new TranslateTextRequest()
                 .withText(notifyMeDO.text())
                 .withSourceLanguageCode(notifyMeDO.sourceLc())
                 .withTargetLanguageCode(notifyMeDO.targetLc());
-        final TranslateTextResult translateTextResult = transalte.translateText(translateTextRequest);
-        LOGGER.info("TEKST {} ", translateTextResult);
-        return translateTextResult.getTranslatedText();
+
+        final TranslateTextResult translateResult = translate.translateText(translateRequest);
+
+        LOGGER.info("Text '{}' was successful translated from {} to {} with result '{}'",
+                notifyMeDO.text(), notifyMeDO.sourceLc(), notifyMeDO.targetLc(), translateRequest.getText());
+
+        return translateResult.getTranslatedText();
     }
 }

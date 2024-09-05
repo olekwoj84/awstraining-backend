@@ -1,54 +1,44 @@
 package com.awstraining.backend.business.notifyme;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class NotifyMeService {
+    private MessageSender sender;
+
+    private Translator translator;
+    private Sentiment sentimentDetector;
 
     // TODO: lab1
     //  1. Inject MessageSender.
-    private MessageSender sender;
     // TODO lab2
     //  1. Inject Translator
-    private Translator translator;
     // TODO lab3
     //  1. Inject sentiment detector
-
-    private Sentiment sentimentDetector;
-//    @Autowired
-    public NotifyMeService(MessageSender sender, Translator translator) {
+    @Autowired
+    public NotifyMeService(MessageSender sender, Translator translator, Sentiment sentimentAssessor) {
         this.sender = sender;
         this.translator = translator;
+        this.sentimentDetector = sentimentAssessor;
     }
-    
+
     public String notifyMe(NotifyMeDO notifyMe) {
-      
+
         // TODO: lab1
         //  1. Send text using sender.
         //  2. Return sent message.
-//        sender.send(notifyMe.text());
-
-
-
-
         // TODO: lab2
         //  1. Translate text from using translator.
         //  2. Change sending of text to "translated text" and return it.
-
-//        String translatedText = translator.translate(notifyMe);
-//        sender.send(translatedText);
-
         // TODO: lab3
         //  1. Detect sentiment of translated message.
         //  2. Change sending of text to "setiment: translated text" and return it.
-
-        String translatedText = translator.translate(notifyMe);
-        String sentiment = sentimentDetector.detectSentiment(notifyMe.targetLc(), notifyMe.text());
-        String textWithSentiment = sentiment + ": " + translatedText;
-        sender.send(textWithSentiment);
-
-
-        return textWithSentiment;
+        final String translatedMessage = translator.translate(notifyMe);
+        final String sentiment = sentimentDetector.detectSentiment(notifyMe.targetLc(), translatedMessage);
+        final String sentMessage = sentiment + ": " + translatedMessage;
+        sender.send(sentMessage);
+        return sentMessage;
     }
-    
+
 }
