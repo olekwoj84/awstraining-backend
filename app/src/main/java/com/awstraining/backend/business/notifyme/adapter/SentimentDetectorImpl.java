@@ -1,5 +1,8 @@
 package com.awstraining.backend.business.notifyme.adapter;
 
+import com.amazonaws.services.comprehend.AmazonComprehend;
+import com.amazonaws.services.comprehend.model.DetectSentimentRequest;
+import com.amazonaws.services.comprehend.model.DetectSentimentResult;
 import com.awstraining.backend.business.notifyme.Sentiment;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -10,13 +13,13 @@ public class SentimentDetectorImpl implements Sentiment {
 
     private static final Logger LOGGER = LogManager.getLogger(SentimentDetectorImpl.class);
     
-
+    private AmazonComprehend sentimentDetector;
     
     // TODO: lab3
     //  1. Inject AWS AmazonComprehend from configuration ComprehendSentimentConfig.
 //    @Autowired
-    public SentimentDetectorImpl() {
-        
+    public SentimentDetectorImpl(AmazonComprehend sentimentDetector) {
+        this.sentimentDetector = sentimentDetector;
     }
 
     // TODO: lab3
@@ -26,6 +29,10 @@ public class SentimentDetectorImpl implements Sentiment {
     //  4. Return sentiment.
     @Override
     public String detectSentiment(String language, String text) {
-      return "";
+        final DetectSentimentRequest sentimentRequest = new DetectSentimentRequest()
+                .withText(text)
+                .withLanguageCode(language);
+        final DetectSentimentResult sentimentResult =  sentimentDetector.detectSentiment(sentimentRequest);
+      return sentimentResult.getSentiment();
     }
 }

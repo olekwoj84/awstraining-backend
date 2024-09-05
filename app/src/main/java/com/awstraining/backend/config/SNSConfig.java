@@ -29,7 +29,7 @@ public class SNSConfig {
     //  1. Configure AmazonSNS which will be used by fargate within AWS.
     //  2. Make sure that your task role has access to publish action (ecs-task-role-policy).
     //  3. Think how to connect with AWS Service from your local pc. 
-    @Bean
+/*    @Bean
     AmazonSNS configureSNSClient() {
         return AmazonSNSClientBuilder.standard()
                 .withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials(snsAccessKey, snsSecretKey)))
@@ -37,5 +37,17 @@ public class SNSConfig {
                     .build();
 //        return AmazonSNSClientBuilder.standard().build();
 
+    }*/
+    @Bean
+    AmazonSNS configureSNSClient() {
+        if (snsAccessKey != null && snsSecretKey != null) {
+            return AmazonSNSClientBuilder.standard()
+                    .withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials(snsAccessKey, snsSecretKey)))
+                    .withRegion(awsRegion)
+                    .build();
+        } else {
+            // using real sns client instance
+            return AmazonSNSClientBuilder.standard().build();
+        }
     }
 }
