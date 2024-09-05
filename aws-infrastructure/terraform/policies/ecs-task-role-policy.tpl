@@ -36,22 +36,22 @@ ${jsonencode(
     {
     "Effect": "Allow",
     "Action": "s3:PutObject",
-    "Resource": "*",
+    "Resource": "*"
     },
     {
     "Effect": "Allow",
     "Action": "sns:Publish",
-    "Resource": "*",
+    "Resource": "*"
     },
     {
     "Effect": "Allow",
     "Action": "translate:TranslateText",
-    "Resource": "*",
+    "Resource": "*"
     },
     {
     "Effect": "Allow",
     "Action": "comprehend:DetectSentiment",
-    "Resource": "*",
+    "Resource": "*"
     }
   ]
 }
