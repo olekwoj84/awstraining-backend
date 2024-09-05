@@ -4,6 +4,7 @@ import com.awstraining.backend.api.rest.v1.NotifyMeApi;
 import com.awstraining.backend.api.rest.v1.model.NotifyMe;
 import com.awstraining.backend.api.rest.v1.model.SentMessage;
 import com.awstraining.backend.business.notifyme.NotifyMeDO;
+import com.awstraining.backend.business.notifyme.NotifyMeService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,12 +15,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("notification/v1")
 public class NotifyMeController implements NotifyMeApi {
 
+    private final NotifyMeService service;
 
     
     // TODO: lab1
     //  1. Inject service with business logic.
 //    @Autowired
-    public NotifyMeController() {
+    public NotifyMeController(NotifyMeService service) {
+        this.service = service;
     }
 
 
@@ -28,6 +31,8 @@ public class NotifyMeController implements NotifyMeApi {
     //  Method should return Http 200 and content of sent message to subscribers.
     @Override
     public ResponseEntity<SentMessage> notifyMe(NotifyMe notifyMe) {
+        final NotifyMeDO notifyMeDO = map(notifyMe);
+        final String message = service.notifyMe(notifyMeDO);
         return ResponseEntity.notFound().build();
     }
 
